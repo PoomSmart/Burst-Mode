@@ -1,0 +1,18 @@
+#!/bin/bash
+
+chk=$(uname -m)
+
+if [ -d "/System/Library/PrivateFrameworks/PhysicsKit.framework" ];then
+	## This is iOS 7.x or above.
+	if [ ! -d "/System/Library/Frameworks/PhotosUI.framework" ];then
+		## This is iOS 7.x
+		if [[ "$chk" != iPhone6* ]];then
+			## This is non-iPhone-5s.
+			cd /System/Library/PrivateFrameworks/PhotoLibrary.framework
+			rm -f *.lproj/PhotoLibrary-Avalanche.strings
+			cd /System/Library/PrivateFrameworks/PhotosUI.framework
+			rm -f Avalanche*.png
+			rm -f *.lproj/PhotosUI-Avalanche.strings
+		fi
+	fi
+fi

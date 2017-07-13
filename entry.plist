@@ -1,0 +1,10 @@
+{
+	entry = {
+		bundle = "BurstModeSettings";
+		cell = PSLinkCell;
+		detail = "BurstModePreferenceController";
+		icon = "BurstMode.png";
+		isController = 1;
+		label = "Burst Mode";
+	};
+}

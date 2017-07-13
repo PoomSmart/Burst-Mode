@@ -1,0 +1,6 @@
+*.deb
+.DS_Store
+.theos
+theos
+obj
+_

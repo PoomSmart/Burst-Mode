@@ -1,0 +1,9 @@
+Package: org.thebigboss.burstmode
+Name: Burst Mode
+Depends: mobilesubstrate, preferenceloader, firmware (>= 5.0), ws.hbang.common (>= 1.2), gsc.still-camera | gsc.front-facing-camera
+Version: 1.5
+Architecture: iphoneos-arm
+Description: Extended Burst mode feature for iOS.
+Author: PoomSmart
+Section: Tweaks
+Icon: file:///Library/PreferenceBundles/BurstModeSettings.bundle/BurstMode@2x.png

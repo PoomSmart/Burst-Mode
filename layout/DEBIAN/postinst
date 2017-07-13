@@ -1,0 +1,28 @@
+#!/bin/bash
+
+chk=$(uname -m)
+
+if [ ! -d "/System/Library/PrivateFrameworks/PhysicsKit.framework" ];then
+	## This is iOS 6.x or below, these unrelated files should be deleted.
+	rm -rf /System/Library/PrivateFrameworks/PhotosUI.framework
+	
+	cd /System/Library/PrivateFrameworks/PhotoLibrary.framework
+	rm -f *.lproj/PhotoLibrary-Avalanche.strings
+	
+	## These five folders should not be in iOS 6.x or below, as they conflict localization system.
+	rm -rf de.lproj en.lproj es.lproj fr.lproj ja.lproj
+else
+	## This is iOS 7.x or above.
+	if [ ! -d "/System/Library/Frameworks/PhotosUI.framework" ];then
+		## This is iOS 7.x
+		if [[ "$chk" != iPhone6* ]];then
+			## This is non-iPhone-5s.
+			## Merge files in directories.
+			cp -R /Library/BurstModeRes/PhotoLibrary/* /System/Library/PrivateFrameworks/PhotoLibrary.framework | test
+			cp -R /Library/BurstModeRes/PhotosUI/* /System/Library/PrivateFrameworks/PhotosUI.framework | test
+		fi
+	fi
+fi
+
+## No need anymore.
+rm -rf /Library/BurstModeRes

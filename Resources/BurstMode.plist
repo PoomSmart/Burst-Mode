@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>title</key>
+    <string>Burst Mode</string>
+    <key>entry</key>
+    <dict>
+      <key>cell</key>
+      <string>PSLinkCell</string>
+      <key>icon</key>
+      <string>BurstMode.png</string>
+      <key>label</key>
+      <string>Burst Mode</string>
+    </dict>
+    <key>items</key>
+    <array>
+      <dict>
+        <key>cell</key>
+        <string>PSSwitchCell</string>
+        <key>default</key>
+        <true/>
+        <key>defaults</key>
+        <string>com.PS.BurstMode</string>
+        <key>key</key>
+        <string>BurstModeEnabled</string>
+        <key>label</key>
+        <string>Enabled</string>
+        <key>set</key>
+        <string>masterSwitch:specifier:</string>
+        <key>PostNotification</key>
+        <string>com.PS.BurstMode/ReloadPrefs</string>
+      </dict>
+    <dict>
+        <key>cell</key>
+        <string>PSGroupCell</string>
+        <key>label</key>
+        <string>Bursts limit</string>
+    </dict>
+      <dict>
+		<key>cell</key>
+		<string>PSEditTextCell</string>
+		<key>detail</key>
+		<string>PSDetailController</string>
+		<key>default</key>
+		<string></string>
+		<key>defaults</key>
+		<string>com.PS.BurstMode</string>
+		<key>key</key>
+		<string>PhotoLimitCount</string>
+		<key>placeholder</key>
+		<string>Unlimited</string>
+		<key>isNumeric</key>
+		<true/>
+		<key>PostNotification</key>
+        <string>com.PS.BurstMode/ReloadPrefs</string>
+	   </dict>
+	    <dict>
+      		<key>cell</key>
+      		<string>PSButtonCell</string>
+      		<key>alignment</key>
+			<integer>2</integer>
+      		<key>action</key>
+      		<string>setPhotosLimit:</string>
+      		<key>label</key>
+      		<string>Set</string>
+      </dict>
+      <dict>
+      	<key>cell</key>
+      	<string>PSGroupCell</string>
+      	<key>id</key>
+		<string>Sliders</string>
+      </dict>
+      <dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>cellClass</key>
+			<string>BMSliderTableCell</string>
+			<key>cellName</key>
+			<string>Hold Time Delay</string>
+			<key>default</key>
+			<real>1.0</real>
+			<key>defaults</key>
+			<string>com.PS.BurstMode</string>
+			<key>key</key>
+			<string>HoldTime</string>
+			<key>id</key>
+			<string>HoldTimeSlider</string>
+			<key>max</key>
+			<real>3.0</real>
+			<key>min</key>
+			<real>0.0</real>
+		</dict>
+      <dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>cellClass</key>
+			<string>BMSliderTableCell</string>
+			<key>cellName</key>
+			<string>Burst Interval</string>
+			<key>default</key>
+			<real>0.01</real>
+			<key>defaults</key>
+			<string>com.PS.BurstMode</string>
+			<key>key</key>
+			<string>Interval</string>
+			<key>id</key>
+			<string>Interval</string>
+			<key>max</key>
+			<real>6.0</real>
+			<key>min</key>
+			<real>0.0</real>
+		</dict>
+      <dict>
+        <key>cell</key>
+        <string>PSSwitchCell</string>
+        <key>default</key>
+        <true/>
+        <key>defaults</key>
+        <string>com.PS.BurstMode</string>
+        <key>key</key>
+        <string>BurstModeSafeEnabled</string>
+        <key>id</key>
+		<string>BurstModeSafe</string>
+        <key>label</key>
+        <string>Safe</string>
+        <key>PostNotification</key>
+        <string>com.PS.BurstMode/ReloadPrefs</string>
+      </dict>
+      <dict>
+      	<key>cell</key>
+      	<string>PSGroupCell</string>
+      	<key>label</key>
+        <string>Configurations</string>
+      </dict>
+      <dict>
+        <key>cell</key>
+        <string>PSSwitchCell</string>
+        <key>default</key>
+        <false/>
+        <key>defaults</key>
+        <string>com.PS.BurstMode</string>
+        <key>key</key>
+        <string>DisableIrisEnabled</string>
+        <key>id</key>
+		<string>DisableIris</string>
+        <key>label</key>
+        <string>No Iris Animation</string>
+        <key>PostNotification</key>
+        <string>com.PS.BurstMode/ReloadPrefs</string>
+      </dict>
+      <dict>
+        <key>cell</key>
+        <string>PSSwitchCell</string>
+        <key>default</key>
+        <false/>
+        <key>defaults</key>
+        <string>com.PS.BurstMode</string>
+        <key>key</key>
+        <string>DisableAnimEnabled</string>
+        <key>id</key>
+		<string>DisableAnim</string>
+        <key>label</key>
+        <string>No Preview Animation</string>
+        <key>PostNotification</key>
+        <string>com.PS.BurstMode/ReloadPrefs</string>
+      </dict>
+      <dict>
+        <key>cell</key>
+        <string>PSSwitchCell</string>
+        <key>default</key>
+        <false/>
+        <key>defaults</key>
+        <string>com.PS.BurstMode</string>
+        <key>key</key>
+        <string>LiveWellEnabled</string>
+        <key>id</key>
+		<string>LiveWell</string>
+        <key>label</key>
+        <string>Live Preview Well</string>
+        <key>PostNotification</key>
+        <string>com.PS.BurstMode/ReloadPrefs</string>
+      </dict>
+      <dict>
+        <key>cell</key>
+        <string>PSSwitchCell</string>
+        <key>default</key>
+        <false/>
+        <key>defaults</key>
+        <string>com.PS.BurstMode</string>
+        <key>key</key>
+        <string>AllowHDREnabled</string>
+        <key>id</key>
+		<string>AllowHDR</string>
+        <key>label</key>
+        <string>HDR Burst</string>
+        <key>PostNotification</key>
+        <string>com.PS.BurstMode/ReloadPrefs</string>
+      </dict>
+      <dict>
+        <key>cell</key>
+        <string>PSSwitchCell</string>
+        <key>default</key>
+        <false/>
+        <key>defaults</key>
+        <string>com.PS.BurstMode</string>
+        <key>key</key>
+        <string>expFormat</string>
+        <key>id</key>
+		<string>expFormat</string>
+        <key>label</key>
+        <string>No 999 Limit</string>
+        <key>PostNotification</key>
+        <string>com.PS.BurstMode/ReloadPrefs</string>
+      </dict>
+      <dict>
+        <key>cell</key>
+        <string>PSSwitchCell</string>
+        <key>default</key>
+        <false/>
+        <key>defaults</key>
+        <string>com.PS.BurstMode</string>
+        <key>key</key>
+        <string>AnimInd</string>
+        <key>id</key>
+		<string>AnimInd</string>
+        <key>label</key>
+        <string>No Counter Animation</string>
+        <key>PostNotification</key>
+        <string>com.PS.BurstMode/ReloadPrefs</string>
+      </dict>
+      <dict>
+        <key>cell</key>
+        <string>PSSwitchCell</string>
+        <key>default</key>
+        <false/>
+        <key>defaults</key>
+        <string>com.PS.BurstMode</string>
+        <key>key</key>
+        <string>noCaptureSound</string>
+        <key>label</key>
+        <string>Disable Capture Sound</string>
+        <key>PostNotification</key>
+        <string>com.PS.BurstMode/ReloadPrefs</string>
+      </dict>
+      <dict>
+        <key>cell</key>
+        <string>PSSwitchCell</string>
+        <key>default</key>
+        <false/>
+        <key>defaults</key>
+        <string>com.PS.BurstMode</string>
+        <key>key</key>
+        <string>singleCounter</string>
+        <key>label</key>
+        <string>Single Counter</string>
+        <key>PostNotification</key>
+        <string>com.PS.BurstMode/ReloadPrefs</string>
+      </dict>
+		<dict>
+        <key>cell</key>
+        <string>PSGroupCell</string>
+		<key>id</key>
+		<string>Description</string>
+		<key>label</key>
+        <string>Guides</string>
+	</dict>
+	<dict>
+        <key>cell</key>
+        <string>PSGroupCell</string>
+		<key>footerAlignment</key>
+		<integer>0</integer>
+		<key>footerText</key>
+        <string>⚫ Bursts limit - Limit your continuously photos count, 0 or unset for unlimited photos.
+⚫ (iOS 7.0) HDR Burst - Burst mode with HDR (if HDR is on)
+⚫ Disable Capture Sound - Disable shutter sound when capturing burst photos.
+⚫ Single Counter - Display just a right number of taken photos count, no extra zeros.</string>
+	</dict>
+    <dict>
+        <key>cell</key>
+        <string>PSGroupCell</string>
+		<key>id</key>
+		<string>help56</string>
+		<key>footerAlignment</key>
+		<integer>0</integer>
+		<key>footerText</key>
+        <string>🔴 Hold Time Delay - Delay before capturing continuously photos.
+🔴 Burst Interval - Adjust delay for Burst mode in seconds.
+🔴 Safe - Continue taking photo only if the previous photo is written in the photo album, is very recommended to enable this by default, or you may face non-stop photo capturing bug if your iDevice is lag somehow.
+❗ Less interval are not recommended with Safe option disabled.
+❓ This option is very recommended for "HDR Burst" and more than 5MP Camera also with "Safe" option enabled because they both take some time for one photo capturing.
+
+🔴 Disable Iris Animation - Useful when user takes photo continuously and iris animation is useless. (Enabling this makes burst photo capture faster)
+🔴 Disable Preview Animation - Disable the animation when captured image is moving to the album preview at bottom-left. (Enabling this makes burst photo capture faster)
+🔴 Live Preview Well - Live update for preview image in the album at bottom-left of screen, you will need this only if "Disable Iris Animation" is enabled.
+
+❓ Burst Mode will override the volume buttons function when it's enabled, by adding the delay (= Burst Mode interval + a little amount) before taking a single photo to make Burst Mode works normally.</string>
+	</dict>
+	<dict>
+        <key>cell</key>
+        <string>PSGroupCell</string>
+		<key>id</key>
+		<string>help78</string>
+		<key>footerAlignment</key>
+		<integer>0</integer>
+		<key>footerText</key>
+		<string>🔵 (iOS 7) No 999 Limit - Remove 999 burst photos limit. (Bursts limit must be unset or 0)
+🔵 No Counter Animation - Disable the flashing animation of the photo count indicator.</string>
+	</dict>
+	<dict>
+        <key>cell</key>
+        <string>PSGroupCell</string>
+		<key>id</key>
+		<string>Description2</string>
+		<key>footerAlignment</key>
+		<integer>0</integer>
+		<key>footerText</key>
+		<string>❔ When you hold down camare button or volume button, the count down timer before burst will start, when the timer fired, Burst Mode will temporary disable Focus, Auto focus, HDR (if HDR Burst is disabled), Flash, Iris animation (if Disable Iris Animation is enabled), Preview animation (if Disable Preview Animation is enabled) and Face Detection then start taking continuously photos, the photos counter will be visible at bottom-middle, everything will become the rest when you release camera button or volume button.</string>
+	</dict>
+      <dict>
+      		<key>cell</key>
+      		<string>PSGroupCell</string>
+      		<key>label</key>
+      		<string>Developer</string>
+      		<key>footerAlignment</key>
+		<integer>1</integer>
+		<key>footerText</key>
+		<string>© 2013 - 2017 Thatchapon Unprasert
+(@PoomSmart)</string>
+      </dict>
+      <dict>
+    	<key>big</key>
+    	<true/>
+    	<key>cellClass</key>
+		<string>HBTwitterCell</string>
+		<key>height</key>
+		<integer>60</integer>
+		<key>label</key>
+		<string>PoomSmart</string>
+		<key>user</key>
+		<string>PoomSmart</string>
+	</dict>
+      <dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>cellClass</key>
+			<string>HBLinkTableCell</string>
+			<key>label</key>
+			<string>Donate ❤️</string>
+			<key>alignment</key>
+			<integer>1</integer>
+			<key>url</key>
+			<string>http://poomsmart.github.io/repo/</string>
+		</dict>
+    </array>
+  </dict>
+</plist>
