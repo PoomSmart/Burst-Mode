@@ -1,5 +1,8 @@
 #define KILL_PROCESS
+#define UIFUNCTIONS_NOT_C
 #import <UIKit/UIKit.h>
+#import <UIKit/UIImage+Private.h>
+#import <UIKit/UIColor+Private.h>
 #import <Preferences/PSControlTableCell.h>
 #import <Cephei/HBListController.h>
 #import <Cephei/HBAppearanceSettings.h>
@@ -15,7 +18,7 @@ DeclarePrefsTools()
 extern CFStringRef kGSHDRImageCaptureCapability;
 static BOOL (*MGGetBoolAnswer)(CFStringRef);
 
-static BOOL hasCapability(CFStringRef capability){
+static BOOL hasCapability(CFStringRef capability) {
     if (!isiOS7Up)
         return GSSystemHasCapability(capability);
     if (!MGGetBoolAnswer) {
@@ -23,12 +26,12 @@ static BOOL hasCapability(CFStringRef capability){
         if (libMobileGestalt)
             MGGetBoolAnswer = dlsym(libMobileGestalt, "MGGetBoolAnswer");
     }
-    if (MGGetBoolAnswer != NULL)
+    if (MGGetBoolAnswer)
         return MGGetBoolAnswer(capability);
     return NO;
 }
 
-static BOOL hasHDR(){
+static BOOL hasHDR() {
     return hasCapability(kGSHDRImageCaptureCapability);
 }
 
@@ -63,13 +66,11 @@ static BOOL hasHDR(){
         float value = floatForKey(key, [[spec propertyForKey:@"default"] floatValue]);
         slider.value = value;
         self.control = slider;
-
         UILabel *label = [[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 35, 14)] autorelease];
         label.text = [NSString stringWithFormat:@"%.2f", value];
         label.lineBreakMode = NSLineBreakByWordWrapping;
         label.textAlignment = NSTextAlignmentRight;
         label.backgroundColor = [UIColor clearColor];
-
         self.accessoryView = label;
         self.textLabel.text = [spec propertyForKey:@"cellName"];
         [slider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
@@ -93,14 +94,14 @@ static BOOL hasHDR(){
         textSize = [label.text sizeWithAttributes:@{NSFontAttributeName:[label font]}];
         textWidth = textSize.width;
     } else {
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         textSize = [label.text sizeWithFont:label.font];
         textWidth = textSize.width;
-                #pragma clang diagnostic pop
+#pragma clang diagnostic pop
     }
-    CGFloat leftPad = textWidth + 28.0f;
-    CGFloat rightPad = 14.0f;
+    CGFloat leftPad = textWidth + 28.0;
+    CGFloat rightPad = 14.0;
     UIView *contentView = (UIView *)self.contentView;
     UISlider *slider = (UISlider *)self.control;
     slider.center = contentView.center;
@@ -128,14 +129,16 @@ HaveBanner2(@"Burst Mode", isiOS7Up ? UIColor.systemGrayColor : UIColor.grayColo
         appearanceSettings.tintColor = isiOS7Up ? UIColor.systemGrayColor : UIColor.whiteColor;
         appearanceSettings.invertedNavigationBar = YES;
         self.hb_appearanceSettings = appearanceSettings;
-        UIButton *heart = [[[UIButton alloc] initWithFrame:CGRectZero] autorelease];
-        UIImage *image = [UIImage imageNamed:@"Heart" inBundle:[NSBundle bundleWithPath:@"/Library/PreferenceBundles/BurstModeSettings.bundle"]];
-        if (isiOS7Up)
-            image = [image _flatImageWithColor:UIColor.whiteColor];
-        [heart setImage:image forState:UIControlStateNormal];
-        [heart sizeToFit];
-        [heart addTarget:self action:@selector(love) forControlEvents:UIControlEventTouchUpInside];
-        self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:heart] autorelease];
+        if (isiOS6Up) {
+            UIButton *heart = [[[UIButton alloc] initWithFrame:CGRectZero] autorelease];
+            UIImage *image = [UIImage imageNamed:@"Heart" inBundle:[NSBundle bundleWithPath:@"/Library/PreferenceBundles/BurstModeSettings.bundle"]];
+            if (isiOS7Up)
+                image = [image _flatImageWithColor:UIColor.whiteColor];
+            [heart setImage:image forState:UIControlStateNormal];
+            [heart sizeToFit];
+            [heart addTarget:self action:@selector(love) forControlEvents:UIControlEventTouchUpInside];
+            self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:heart] autorelease];
+        }
     }
     return self;
 }
@@ -158,9 +161,8 @@ HaveBanner2(@"Burst Mode", isiOS7Up ? UIColor.systemGrayColor : UIColor.grayColo
 - (NSArray *)specifiers {
     if (_specifiers == nil) {
         NSMutableArray *specs = [NSMutableArray arrayWithArray:[self loadSpecifiersFromPlistName:@"BurstMode" target:self]];
-
         for (PSSpecifier *spec in specs) {
-            NSString *Id = [spec properties][@"id"];
+            NSString *Id = [[spec properties] objectForKey:@"id"];
             if ([Id isEqualToString:@"Sliders"])
                 self.slidersSpec = spec;
             else if ([Id isEqualToString:@"HoldTimeSlider"])
@@ -188,7 +190,6 @@ HaveBanner2(@"Burst Mode", isiOS7Up ? UIColor.systemGrayColor : UIColor.grayColo
             else if ([Id isEqualToString:@"Description2"])
                 self.description2Spec = spec;
         }
-
         if (isiOS7Up) {
             if (!isiOS70)
                 [specs removeObject:self.allowHDRSpec];

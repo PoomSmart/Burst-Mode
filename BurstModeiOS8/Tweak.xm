@@ -1,11 +1,10 @@
-#import "../BurstMode.h"
 #define TWEAK
+#import "../BurstMode.h"
 #import "../Prefs.h"
 
 %hook CAMCameraView
 
-- (void)captureController: (id)controller willCaptureStillImageForRequest: (id)request
-{
+- (void)captureController: (id)controller willCaptureStillImageForRequest: (id)request {
     MSHookIvar<BOOL>(self, "__needToStartAvalancheSound") = !noCaptureSound;
     %orig;
 }
@@ -20,7 +19,7 @@
     CAMAvalancheCaptureService *service = [(CAMCaptureController *)[%c(CAMCaptureController) sharedInstance] _avalancheCaptureService];
     CAMAvalancheSession *session = [service _activeAvalancheSession];
     NSUInteger orig = [session numberOfPhotos];
-    if (limitedPhotosCount > 0) {
+    if (limitedPhotosCount) {
         if (orig >= limitedPhotosCount - 1) {
             [self _teardownAvalancheCaptureTimer];
             return;
@@ -33,8 +32,7 @@
 
 %hook CAMAvalancheCaptureService
 
-- (BOOL)canContinueAvalancheCapture
-{
+- (BOOL)canContinueAvalancheCapture {
     NSUInteger photoCount = [self _activeAvalancheSession].numberOfPhotos;
     if (limitedPhotosCount > 0) {
         if (photoCount == limitedPhotosCount)
@@ -49,8 +47,7 @@
 
 %hook CAMAvalancheIndicatorView
 
-- (void)_updateCountLabelWithNumberOfPhotos
-{
+- (void)_updateCountLabelWithNumberOfPhotos {
     if (singleCounter) {
         NSInteger photoCount = MSHookIvar<NSInteger>(self, "__numberOfPhotos");
         UILabel *label = MSHookIvar<UILabel *>(self, "__countLabel");
@@ -71,10 +68,10 @@
 %group MG
 
 extern "C" Boolean MGGetBoolAnswer(CFStringRef);
-%hookf(Boolean, MGGetBoolAnswer, CFStringRef string){
-    if (k("RearFacingCameraBurstCapability") || k("FrontFacingCameraBurstCapability"))
+%hookf(Boolean, MGGetBoolAnswer, CFStringRef key) {
+    if (CFEqual(key, CFSTR("RearFacingCameraBurstCapability")) || CFEqual(key, CFSTR("FrontFacingCameraBurstCapability")))
         return YES;
-    return %orig(string);
+    return %orig(key);
 }
 
 %end
@@ -82,7 +79,7 @@ extern "C" Boolean MGGetBoolAnswer(CFStringRef);
 %group AudioHook
 
 extern "C" void AudioServicesPlaySystemSound(SystemSoundID sound);
-%hookf(void, AudioServicesPlaySystemSound, SystemSoundID sound){
+%hookf(void, AudioServicesPlaySystemSound, SystemSoundID sound) {
     if (sound == 1122 && noSound)
         return;
     %orig(sound);
@@ -94,8 +91,7 @@ extern "C" void AudioServicesPlaySystemSound(SystemSoundID sound);
 
 %hook PUPhotoBrowserControllerPadSpec
 
-- (id)avalancheReviewControllerSpec
-{
+- (id)avalancheReviewControllerSpec {
     return [[[objc_getClass("PUAvalancheReviewControllerPhoneSpec") alloc] init] autorelease];
 }
 
@@ -103,10 +99,9 @@ extern "C" void AudioServicesPlaySystemSound(SystemSoundID sound);
 
 %hook PUPhotoBrowserController
 
-- (id)_navbarButtonForIdentifier: (NSString *)ident
-{
-    if ([ident isEqualToString:@"PUPHOTOBROWSER_BUTTON_REVIEW"])
-        return [self _toolbarButtonForIdentifier:ident];
+- (id)_navbarButtonForIdentifier: (NSString *)identifier {
+    if ([identifier isEqualToString:@"PUPHOTOBROWSER_BUTTON_REVIEW"])
+        return [self _toolbarButtonForIdentifier:identifier];
     return %orig;
 }
 
@@ -114,18 +109,14 @@ extern "C" void AudioServicesPlaySystemSound(SystemSoundID sound);
 
 %end
 
-%ctor
-{
-    NSString *identifier = NSBundle.mainBundle.bundleIdentifier;
-    BOOL isSpringBoard = [identifier isEqualToString:@"com.apple.springboard"];
-    if (isSpringBoard)
+%ctor {
+    if (IN_SPRINGBOARD)
         return;
-    HaveObserver()
+    HaveObserver();
     callback();
     if (BurstMode) {
-        BOOL isPrefApp = [identifier isEqualToString:@"com.apple.Preferences"];
-        if (!isPrefApp) {
-            if (![identifier isEqualToString:@"com.apple.mobileslideshow"]) {
+        if (![NSBundle.mainBundle.bundleIdentifier isEqualToString:@"com.apple.Preferences"]) {
+            if (![NSBundle.mainBundle.bundleIdentifier isEqualToString:@"com.apple.mobileslideshow"]) {
                 openCamera8();
                 %init;
             }

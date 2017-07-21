@@ -10,7 +10,7 @@ UILabel *counter;
 
 CGFloat kCounterBGAlpha = 0.4f;
 
-void hideCounter(){
+void hideCounter() {
     if (burst) {
         counterAnimate = YES;
         [UIView animateWithDuration:0.8f delay:0.0f options:0
@@ -22,7 +22,7 @@ void hideCounter(){
             counterBG.hidden = YES;
             counter.text = singleCounter ? @"0" : @"000";
         }];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3*NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
             burst = NO;
         });
         photoCount = 0;
@@ -30,23 +30,23 @@ void hideCounter(){
     }
 }
 
-void invalidateTimer(){
-    if (BMHoldTimer != nil) {
+void invalidateTimer() {
+    if (BMHoldTimer) {
         [BMHoldTimer invalidate];
         BMHoldTimer = nil;
     }
-    if (BMPressTimer != nil) {
+    if (BMPressTimer) {
         [BMPressTimer invalidate];
         BMPressTimer = nil;
     }
 }
 
-PLCameraController *cameraController(){
+PLCameraController *cameraController() {
     return (PLCameraController *)[%c(PLCameraController) sharedInstance];
 }
 
-void cleanup(){
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2*NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+void cleanup() {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
         PLCameraController *controller = cameraController();
         PLCameraView *cameraView = [controller delegate];
         [cameraView _setBottomBarEnabled:YES];
@@ -60,27 +60,26 @@ void cleanup(){
             [controller setFaceDetectionEnabled:YES];
     });
     noAutofocus = NO;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.35*NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.35 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
         disableIris = NO;
     });
 }
 
-BOOL isPhotoCamera(){
+BOOL isPhotoCamera() {
     return cameraController().cameraMode == 0;
 }
 
-BOOL isBackCamera(){
+BOOL isBackCamera() {
     return cameraController().cameraDevice == 0;
 }
 
-BOOL isCapturingVideo(){
+BOOL isCapturingVideo() {
     return [cameraController() isCapturingVideo];
 }
 
 %hook PLCameraButton
 
-- (id)initWithDefaultSize
-{
+- (id)initWithDefaultSize {
     self = %orig;
     if (self) {
         [self addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchDown];
@@ -90,8 +89,7 @@ BOOL isCapturingVideo(){
 }
 
 %new
-- (void)sendPressed
-{
+- (void)sendPressed {
     if (isPhotoCamera()) {
         BMHoldTimer = [NSTimer scheduledTimerWithTimeInterval:HoldTime target:self selector:@selector(burst) userInfo:nil repeats:NO];
         [BMHoldTimer retain];
@@ -99,8 +97,7 @@ BOOL isCapturingVideo(){
 }
 
 %new
-- (void)takePhoto
-{
+- (void)takePhoto {
     PLCameraView *cameraView = [cameraController() delegate];
     if (BurstModeSafe) {
         if (![cameraView hasInFlightCaptures])
@@ -110,8 +107,7 @@ BOOL isCapturingVideo(){
 }
 
 %new
-- (void)burst
-{
+- (void)burst {
     if (isPhotoCamera()) {
         if (counterAnimate)
             return;
@@ -142,8 +138,7 @@ BOOL isCapturingVideo(){
 }
 
 %new
-- (void)sendReleased
-{
+- (void)sendReleased {
     if (isPhotoCamera()) {
         invalidateTimer();
         ignoreCapture = burst;
@@ -156,8 +151,7 @@ BOOL isCapturingVideo(){
 
 %hook PLCameraView
 
-- (void)_handleVolumeButtonUp
-{
+- (void)_handleVolumeButtonUp {
     %orig;
     if (isPhotoCamera())
         [(PLCameraButton *)[(PLCameraButtonBar *) self.bottomButtonBar cameraButton] sendActionsForControlEvents:UIControlEventTouchUpInside];
@@ -221,15 +215,13 @@ BOOL isCapturingVideo(){
 }
 
 - (void)_setupAnimatePreviewDown:(id)down flipImage:(BOOL)image panoImage:(BOOL)image3 snapshotFrame:(CGRect)frame {
-    if (isPhotoCamera() && !isCapturingVideo() && burst) {
-        if (DisableAnim)
-            return;
-    }
+    if (burst && DisableAnim && isPhotoCamera() && !isCapturingVideo())
+        return;
     %orig;
 }
 
 - (void)openIrisWithDidFinishSelector:(SEL)openIrisWith withDuration:(float)duration {
-    if (isPhotoCamera() && DisableIris && disableIris && burst && !isCapturingVideo()) {
+    if (DisableIris && disableIris && burst && isPhotoCamera() && !isCapturingVideo()) {
         [self hideStaticClosedIris];
         [self takePictureOpenIrisAnimationFinished];
         return;
@@ -238,7 +230,7 @@ BOOL isCapturingVideo(){
 }
 
 - (void)closeIrisWithDidFinishSelector:(SEL)closeIrisWith withDuration:(float)duration {
-    if (isPhotoCamera() && DisableIris && disableIris && burst && !isCapturingVideo()) {
+    if (DisableIris && disableIris && burst && isPhotoCamera() && !isCapturingVideo()) {
         [self _clearFocusViews];
         [self resumePreview];
         return;
@@ -250,11 +242,10 @@ BOOL isCapturingVideo(){
 
 %hook PLCameraController
 
-- (BOOL)isHDREnabled
-{
+- (BOOL)isHDREnabled {
     BOOL enabled = %orig;
     if (isPhotoCamera())
-        counterBG.frame = enabled ? CGRectMake(0.0f, -63.0f, 56.0f, 56.0f) : CGRectMake(-28.0f, -48.0f, 56.0f, 56.0f);
+        counterBG.frame = enabled ? CGRectMake(0.0, -63.0, 56.0, 56.0) : CGRectMake(-28.0, -48.0, 56.0, 56.0);
     return enabled;
 }
 
@@ -304,15 +295,14 @@ BOOL isCapturingVideo(){
 %end
 
 extern "C" void AudioServicesPlaySystemSound(SystemSoundID sound);
-%hookf(void, AudioServicesPlaySystemSound, SystemSoundID sound){
-    if (sound == 1108 && noCaptureSound && BMPressTimer != nil)
+%hookf(void, AudioServicesPlaySystemSound, SystemSoundID sound) {
+    if (sound == 1108 && noCaptureSound && BMPressTimer)
         return;
     %orig(sound);
 }
 
-%ctor
-{
-    HaveObserver()
+%ctor {
+    HaveObserver();
     callback();
     if (BurstMode) {
         %init;

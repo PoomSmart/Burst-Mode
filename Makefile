@@ -1,10 +1,10 @@
-DEBUG = 0
-PACKAGE_VERSION = 1.5.6
+PACKAGE_VERSION = 1.5.7
+TARGET = iphone:clang:9.0:5.0
 
 include $(THEOS)/makefiles/common.mk
 
 AGGREGATE_NAME = BurstMode
-SUBPROJECTS = BurstModeiOS56 BurstModeiOS7 BurstModeiOS8 BurstModeiOS9 BurstModeiOS10
+SUBPROJECTS = BurstModeiOS56 BurstModeiOS7 BurstModeiOS8 BurstModeiOS910
 
 include $(THEOS_MAKE_PATH)/aggregate.mk
 
@@ -16,9 +16,10 @@ include $(THEOS_MAKE_PATH)/tweak.mk
 BUNDLE_NAME = BurstModeSettings
 BurstModeSettings_FILES = BurstModePreferenceController.m
 BurstModeSettings_INSTALL_PATH = /Library/PreferenceBundles
+BurstModeSettings_LDFLAGS = -fobjc-arc
 BurstModeSettings_PRIVATE_FRAMEWORKS = Preferences
 BurstModeSettings_FRAMEWORKS = CoreGraphics GraphicsServices Social UIKit
-BurstModeSettings_LIBRARIES = cepheiprefs
+BurstModeSettings_EXTRA_FRAMEWORKS = CepheiPrefs
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

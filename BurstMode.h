@@ -3,7 +3,6 @@
 #import "../PS.h"
 
 NSString *tweakIdentifier = @"com.PS.BurstMode";
-CFStringRef PreferencesNotification = CFSTR("com.PS.BurstMode/ReloadPrefs");
 
 @interface CAMAvalancheSession (BurstMode)
 - (void)fakeSetNum:(NSUInteger)fake;

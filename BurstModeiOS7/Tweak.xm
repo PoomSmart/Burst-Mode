@@ -1,5 +1,5 @@
-#import "../BurstMode.h"
 #define TWEAK
+#import "../BurstMode.h"
 #import "../Prefs.h"
 
 BOOL hook7;
@@ -8,8 +8,7 @@ BOOL hook7;
 
 %hook PLCameraView
 
-- (void)_updateHDR: (NSInteger)mode
-{
+- (void)_updateHDR: (NSInteger)mode {
     %orig(hook7 && [self HDRIsOn] && AllowHDR ? 1 : mode);
 }
 
@@ -21,8 +20,7 @@ BOOL hook7;
 
 %hook PLCameraView
 
-- (void)cameraControllerWillTakePhoto: (id)arg1
-{
+- (void)cameraControllerWillTakePhoto: (id)arg1 {
     MSHookIvar<BOOL>(self, "__needToStartAvalancheSound") = !noCaptureSound;
     %orig;
 }
@@ -61,8 +59,7 @@ BOOL hook7;
 
 %hook CAMAvalancheIndicatorView
 
-- (void)_updateCountLabelWithNumberOfPhotos
-{
+- (void)_updateCountLabelWithNumberOfPhotos {
     if (singleCounter) {
         NSInteger photoCount = MSHookIvar<NSInteger>(self, "__numberOfPhotos");
         UILabel *label = MSHookIvar<UILabel *>(self, "__countLabel");
@@ -83,8 +80,7 @@ BOOL hook7;
 %hook CAMAvalancheSession
 
 %new
-- (void)fakeSetNum: (NSUInteger)fake
-{
+- (void)fakeSetNum: (NSUInteger)fake {
     MSHookIvar<NSUInteger>(self, "_numberOfPhotos") = fake;
 }
 
@@ -95,10 +91,10 @@ BOOL hook7;
 %group MG
 
 extern "C" Boolean MGGetBoolAnswer(CFStringRef);
-%hookf(Boolean, MGGetBoolAnswer, CFStringRef string){
-    if (k("RearFacingCameraBurstCapability") || k("FrontFacingCameraBurstCapability"))
+%hookf(Boolean, MGGetBoolAnswer, CFStringRef key) {
+    if (CFEqual(key, CFSTR("RearFacingCameraBurstCapability")) || CFEqual(key, CFSTR("FrontFacingCameraBurstCapability")))
         return YES;
-    return %orig(string);
+    return %orig(key);
 }
 
 %end
@@ -106,7 +102,7 @@ extern "C" Boolean MGGetBoolAnswer(CFStringRef);
 %group AudioHook
 
 extern "C" void AudioServicesPlaySystemSound(SystemSoundID sound);
-%hookf(void, AudioServicesPlaySystemSound, SystemSoundID sound){
+%hookf(void, AudioServicesPlaySystemSound, SystemSoundID sound) {
     if (sound == 1122 && noSound)
         return;
     %orig(sound);
@@ -118,8 +114,7 @@ extern "C" void AudioServicesPlaySystemSound(SystemSoundID sound);
 
 %hook PUPhotoBrowserControllerPadSpec
 
-- (id)avalancheReviewControllerSpec
-{
+- (id)avalancheReviewControllerSpec {
     return [[[objc_getClass("PUAvalancheReviewControllerPhoneSpec") alloc] init] autorelease];
 }
 
@@ -127,10 +122,9 @@ extern "C" void AudioServicesPlaySystemSound(SystemSoundID sound);
 
 %hook PUPhotoBrowserController
 
-- (id)_navbarButtonForIdentifier: (NSString *)ident
-{
-    if ([ident isEqualToString:@"PUPHOTOBROWSER_BUTTON_REVIEW"])
-        return [self _toolbarButtonForIdentifier:ident];
+- (id)_navbarButtonForIdentifier: (NSString *)identifier {
+    if ([identifier isEqualToString:@"PUPHOTOBROWSER_BUTTON_REVIEW"])
+        return [self _toolbarButtonForIdentifier:identifier];
     return %orig;
 }
 
@@ -139,8 +133,7 @@ extern "C" void AudioServicesPlaySystemSound(SystemSoundID sound);
 %hook CAMPadApplicationSpec
 
 %new
-- (BOOL)shouldCreateAvalancheIndicator
-{
+- (BOOL)shouldCreateAvalancheIndicator {
     return YES;
 }
 
@@ -148,25 +141,20 @@ extern "C" void AudioServicesPlaySystemSound(SystemSoundID sound);
 
 %end
 
-%ctor
-{
-    NSString *identifier = NSBundle.mainBundle.bundleIdentifier;
-    BOOL isSpringBoard = [identifier isEqualToString:@"com.apple.springboard"];
-    if (isSpringBoard)
+%ctor {
+    if (IN_SPRINGBOARD)
         return;
-    HaveObserver()
+    HaveObserver();
     callback();
     if (BurstMode) {
-        BOOL isPrefApp = [identifier isEqualToString:@"com.apple.Preferences"];
-        if (!isPrefApp) {
+        if (![NSBundle.mainBundle.bundleIdentifier isEqualToString:@"com.apple.Preferences"]) {
             openCamera7();
             if (isiOS70) {
                 %init(iOS70);
             }
             %init(Common);
             if (IS_IPAD) {
-                const char *framework = "/System/Library/PrivateFrameworks/PhotosUI.framework/PhotosUI";
-                dlopen(framework, RTLD_LAZY);
+                dlopen("/System/Library/PrivateFrameworks/PhotosUI.framework/PhotosUI", RTLD_LAZY);
                 %init(iPadFix);
             }
             %init(AudioHook);
