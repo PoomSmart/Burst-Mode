@@ -4,7 +4,7 @@
 
 %hook CAMCameraView
 
-- (void)captureController: (id)controller willCaptureStillImageForRequest: (id)request {
+- (void)captureController:(id)controller willCaptureStillImageForRequest:(id)request {
     MSHookIvar<BOOL>(self, "__needToStartAvalancheSound") = !noCaptureSound;
     %orig;
 }
@@ -69,7 +69,7 @@
 
 extern "C" Boolean MGGetBoolAnswer(CFStringRef);
 %hookf(Boolean, MGGetBoolAnswer, CFStringRef key) {
-    if (CFEqual(key, CFSTR("RearFacingCameraBurstCapability")) || CFEqual(key, CFSTR("FrontFacingCameraBurstCapability")))
+    if (CFStringEqual(key, CFSTR("RearFacingCameraBurstCapability")) || CFStringEqual(key, CFSTR("FrontFacingCameraBurstCapability")))
         return YES;
     return %orig(key);
 }
@@ -99,7 +99,7 @@ extern "C" void AudioServicesPlaySystemSound(SystemSoundID sound);
 
 %hook PUPhotoBrowserController
 
-- (id)_navbarButtonForIdentifier: (NSString *)identifier {
+- (id)_navbarButtonForIdentifier:(NSString *)identifier {
     if ([identifier isEqualToString:@"PUPHOTOBROWSER_BUTTON_REVIEW"])
         return [self _toolbarButtonForIdentifier:identifier];
     return %orig;

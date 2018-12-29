@@ -1,4 +1,4 @@
-#import "../PS.h"
+#import "../../PS.h"
 #import <dlfcn.h>
 
 %ctor {

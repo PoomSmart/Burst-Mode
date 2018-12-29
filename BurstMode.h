@@ -1,3 +1,4 @@
+#define UNRESTRICTED_AVAILABILITY
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import "../PS.h"

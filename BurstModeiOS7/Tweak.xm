@@ -8,7 +8,7 @@ BOOL hook7;
 
 %hook PLCameraView
 
-- (void)_updateHDR: (NSInteger)mode {
+- (void)_updateHDR:(NSInteger)mode {
     %orig(hook7 && [self HDRIsOn] && AllowHDR ? 1 : mode);
 }
 
@@ -20,7 +20,7 @@ BOOL hook7;
 
 %hook PLCameraView
 
-- (void)cameraControllerWillTakePhoto: (id)arg1 {
+- (void)cameraControllerWillTakePhoto:(id)arg1 {
     MSHookIvar<BOOL>(self, "__needToStartAvalancheSound") = !noCaptureSound;
     %orig;
 }
@@ -80,7 +80,7 @@ BOOL hook7;
 %hook CAMAvalancheSession
 
 %new
-- (void)fakeSetNum: (NSUInteger)fake {
+- (void)fakeSetNum:(NSUInteger)fake {
     MSHookIvar<NSUInteger>(self, "_numberOfPhotos") = fake;
 }
 
@@ -92,7 +92,7 @@ BOOL hook7;
 
 extern "C" Boolean MGGetBoolAnswer(CFStringRef);
 %hookf(Boolean, MGGetBoolAnswer, CFStringRef key) {
-    if (CFEqual(key, CFSTR("RearFacingCameraBurstCapability")) || CFEqual(key, CFSTR("FrontFacingCameraBurstCapability")))
+    if (CFStringEqual(key, CFSTR("RearFacingCameraBurstCapability")) || CFStringEqual(key, CFSTR("FrontFacingCameraBurstCapability")))
         return YES;
     return %orig(key);
 }
@@ -122,7 +122,7 @@ extern "C" void AudioServicesPlaySystemSound(SystemSoundID sound);
 
 %hook PUPhotoBrowserController
 
-- (id)_navbarButtonForIdentifier: (NSString *)identifier {
+- (id)_navbarButtonForIdentifier:(NSString *)identifier {
     if ([identifier isEqualToString:@"PUPHOTOBROWSER_BUTTON_REVIEW"])
         return [self _toolbarButtonForIdentifier:identifier];
     return %orig;

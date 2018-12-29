@@ -4,14 +4,14 @@
 #import <UIKit/UIImage+Private.h>
 #import <UIKit/UIColor+Private.h>
 #import <Preferences/PSControlTableCell.h>
-#import <Cephei/HBListController.h>
-#import <Cephei/HBAppearanceSettings.h>
+#import <CepheiPrefs/HBListController.h>
+#import <CepheiPrefs/HBAppearanceSettings.h>
 #import <Preferences/PSSpecifier.h>
 #import <Social/Social.h>
 #import <GraphicsServices/GraphicsServices.h>
-#import "BurstMode.h"
 #import <dlfcn.h>
-#import "../PSPrefs.x"
+#import "../BurstMode.h"
+#import "../../PSPrefs.x"
 
 DeclarePrefsTools()
 
@@ -127,7 +127,8 @@ HaveBanner2(@"Burst Mode", isiOS7Up ? UIColor.systemGrayColor : UIColor.grayColo
     if (self == [super init]) {
         HBAppearanceSettings *appearanceSettings = [[HBAppearanceSettings alloc] init];
         appearanceSettings.tintColor = isiOS7Up ? UIColor.systemGrayColor : UIColor.whiteColor;
-        appearanceSettings.invertedNavigationBar = YES;
+        appearanceSettings.navigationBarBackgroundColor = UIColor.grayColor;
+        appearanceSettings.navigationBarTitleColor = UIColor.whiteColor;
         self.hb_appearanceSettings = appearanceSettings;
         if (isiOS6Up) {
             UIButton *heart = [[[UIButton alloc] initWithFrame:CGRectZero] autorelease];

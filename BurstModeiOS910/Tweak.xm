@@ -26,7 +26,7 @@
 
 %hook CAMViewfinderViewController
 
-- (void)_stillImageBurstCaptureRequestWithMaximumLength: (NSInteger)len {
+- (void)_stillImageBurstCaptureRequestWithMaximumLength:(NSInteger)len {
     %orig(limitedPhotosCount ? limitedPhotosCount : len);
 }
 
@@ -56,7 +56,7 @@
 
 extern "C" Boolean MGGetBoolAnswer(CFStringRef);
 %hookf(Boolean, MGGetBoolAnswer, CFStringRef key) {
-    if (CFEqual(key, CFSTR("RearFacingCameraBurstCapability")) || CFEqual(key, CFSTR("FrontFacingCameraBurstCapability")))
+    if (CFStringEqual(key, CFSTR("RearFacingCameraBurstCapability")) || CFStringEqual(key, CFSTR("FrontFacingCameraBurstCapability")))
         return YES;
     return %orig(key);
 }
